@@ -28,6 +28,14 @@ app.use(async (req, res, next) => {
   }
 });
 
+if (process.env.NODE_ENV !== "production") {
+  const PORT = process.env.PORT || 4000;
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+  });
+}
+
+
 app.get("/", (req, res) => res.send("Server is running"));
 
 app.use("/api/inngest", serve({ client: inngest, functions }));
