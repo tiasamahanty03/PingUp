@@ -1,12 +1,22 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
+
+let isConnected = false;
 
 const connectDB = async () => {
-    try {
-        mongoose.connection.on('connected', ()=> console.log('Database connected'))
-        await mongoose.connect(`${process.env.MONGODB_URI}/pingup`)
-    } catch (error) {
-        console.log(error.message)
-    }
-}
+  if (isConnected) {
+    return;
+  }
 
-export default connectDB
+  if (!process.env.MONGO_URI) {
+    throw new Error("MONGO_URI is missing");
+  }
+
+  const db = await mongoose.connect(process.env.MONGO_URI, {
+    dbName: "pingup",
+  });
+
+  isConnected = db.connections[0].readyState;
+  console.log("MongoDB connected");
+};
+
+export default connectDB;
